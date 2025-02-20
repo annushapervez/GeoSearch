@@ -112,10 +112,8 @@ coordinates = """
 39.81167871428570	-74.983931
 """
 
-# Process the data
 lines = coordinates.strip().split("\n")
 combined = [line.replace("\t", ",") for line in lines]
 
-# Print or save the result
 for item in combined:
     print(item)

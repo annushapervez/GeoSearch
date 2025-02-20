@@ -25,5 +25,5 @@ body {
   height: 35px;
   background-size: cover;
   background-position: center;
-  border-radius: 50%; /* Makes it round */
+  border-radius: 50%; 
 }

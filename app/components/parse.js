@@ -287,7 +287,7 @@ const formatTypeName = (type) => {
       "boost": "Boost Mobile",
     };
   
-    return typeMap[type] || type; // Return formatted name or default to the original if not found
+    return typeMap[type] || type; 
   };
 
 const parseCSV = (csv) => {
@@ -301,9 +301,8 @@ const parseCSV = (csv) => {
     .flatMap((row, index) => {
       const stores = [];
   
-      // Helper function to add a store to the list
       const addStore = (type, address, coordinates) => {
-        if (!address) return; // Skip if no address
+        if (!address) return; 
         if (!coordinates) return;
   
         let lat = 0;
@@ -315,8 +314,8 @@ const parseCSV = (csv) => {
         }
   
         stores.push({
-          id: `${index + 1}-${type}`, // Unique ID for each store
-          name: formatTypeName(type), // Use formatted name
+          id: `${index + 1}-${type}`, 
+          name: formatTypeName(type), 
           lat,
           lng,
           type,
@@ -335,10 +334,10 @@ const parseCSV = (csv) => {
     
       return stores;
     })
-    .filter(Boolean); // Remove null values
+    .filter(Boolean); 
 
 
     
   export const geocodeStoreLocations = async () => {
-    return storeLocations; // Return the parsed store locations
+    return storeLocations; 
   };
