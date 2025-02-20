@@ -97,28 +97,6 @@ const HomeButton = () => {
   );
 };
 
-// MarkerCluster Component
-const MarkerCluster = ({ stores }) => {
-  const map = useMap(); // Access the map instance
-
-  useEffect(() => {
-    const markerCluster = new MarkerClusterGroup();
-
-    stores.forEach((store) => {
-      const marker = L.marker([store.lat, store.lng], { icon: getIcon(store.type) });
-      marker.bindPopup(`<strong>${store.name}</strong><br>${store.address}`);
-      markerCluster.addLayer(marker);
-    });
-
-    map.addLayer(markerCluster);
-
-    return () => {
-      map.removeLayer(markerCluster); // Cleanup on unmount
-    };
-  }, [stores, map]);
-
-  return null; // This component doesn't render anything
-};
 
 const StoreMap = ({ geocodedStoreLocations }) => {
   const [mapReady, setMapReady] = useState(false);

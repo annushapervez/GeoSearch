@@ -337,9 +337,7 @@ const parseCSV = (csv) => {
     })
     .filter(Boolean); // Remove null values
 
-    const boostStores = storeLocations.filter(store => store.type === "boost");
 
-    console.log("Boost Stores:", boostStores);
     
   export const geocodeStoreLocations = async () => {
     return storeLocations; // Return the parsed store locations
