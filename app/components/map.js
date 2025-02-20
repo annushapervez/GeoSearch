@@ -58,53 +58,63 @@ const getIcon = (type) => {
   }
 };
 
-const HomeButton = () => {
-  const map = useMap(); 
-
-  const handleHomeClick = () => {
-    map.setView([40.7128, -74.0060], 10); 
-  };
-
-  return (
-    <div
-      style={{
-        position: "absolute",
-        top: "80px",
-        left: "10px", 
-        zIndex: 1000,
-        display: "flex",
-        flexDirection: "column",
-        gap: "10px",
-      }}
-    >
-      <button
-        onClick={handleHomeClick}
-        style={{
-          backgroundColor: "white",
-          border: "1px solid #ccc",
-          borderRadius: "4px",
-          padding: "8px 12px",
-          cursor: "pointer",
-          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-          fontSize: "14px",
-        }}
-      >
-        Home
-      </button>
-    </div>
-  );
-};
-
 
 const StoreMap = ({ geocodedStoreLocations }) => {
   const [mapReady, setMapReady] = useState(false);
   const [filteredStores, setFilteredStores] = useState(geocodedStoreLocations);
   const [selectedType, setSelectedType] = useState(""); 
   const [searchQuery, setSearchQuery] = useState(""); 
+  const [isMobile, setIsMobile] = useState(false);
+
 
   useEffect(() => {
     setMapReady(true);
-  }, []);
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth <= 768); // Adjust for mobile view
+    };
+  
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
+     }, []);
+
+     const HomeButton = () => {
+      const map = useMap(); 
+    
+      const handleHomeClick = () => {
+        map.setView([40.7128, -74.0060], 10); 
+      };
+    
+      return (
+        <div
+          style={{
+            position: "absolute",
+            top: "80px",
+            left: "10px", 
+            zIndex: 1000,
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+          }}
+        >
+    <button
+        onClick={handleHomeClick}
+        style={{
+        backgroundColor: "white",
+        border: "1px solid #ccc",
+        borderRadius: "8px",
+        padding: "8px 12px",
+        fontSize: "14px",
+        cursor: "pointer",
+        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+      }}
+    >
+      Home
+    </button>
+        </div>
+      );
+    };
+    
 
   const handleTypeFilter = (event) => {
     const type = event.target.value;
@@ -131,21 +141,27 @@ const StoreMap = ({ geocodedStoreLocations }) => {
 
   return mapReady ? (
     <div style={{ height: "100vh", margin: 0 }}>
-      <div
-        style={{
-          margin: "10px",
-          zIndex: 9999,
-          position: "absolute",
-          top: 10,
-          right: 10,
-          display: "flex",
-          gap: "10px",
-          backgroundColor: "white",
-          padding: "10px",
-          borderRadius: "8px",
-          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-        }}
-      >
+<div
+  style={{
+    margin: "10px",
+    zIndex: 9999,
+    position: "absolute",
+    top: isMobile ? "auto" : 10,
+    bottom: isMobile ? 10 : "auto",
+    right: isMobile ? "50%" : 10,
+    left: isMobile ? "50%" : "auto",
+    transform: isMobile ? "translateX(-50%)" : "none",
+    display: "flex",
+    flexDirection: isMobile ? "column" : "row",
+    gap: "10px",
+    backgroundColor: "white",
+    padding: "10px",
+    borderRadius: "8px",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+    width: isMobile ? "90%" : "auto",
+    textAlign: isMobile ? "center" : "left",
+  }}
+>
         <input
           type="text"
           placeholder="Search by address"
@@ -184,10 +200,13 @@ const StoreMap = ({ geocodedStoreLocations }) => {
       </div>
 
       <MapContainer
-        center={[40.7128, -74.0060]} 
-        zoom={10}
-        style={{ height: "100%", width: "100%" }} 
-      >
+  center={[40.7128, -74.0060]}
+  zoom={10}
+  style={{
+    height: isMobile ? "80vh" : "100vh", 
+    width: "100%",
+  }}
+>
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
