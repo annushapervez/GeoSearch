@@ -1,6 +1,8 @@
 "use client"; // Ensures compatibility with Next.js (App Router)
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import Head from 'next/head';
+
 
 // Dynamically import the Map component with SSR disabled
 const Map = dynamic(() => import("./components/map"), {
@@ -50,9 +52,15 @@ const StoresPage = () => {
 
   // Render the Map component with geocoded store locations
   return (
-    <div>
-      <Map geocodedStoreLocations={geocodedStoreLocations} />
-    </div>
+    <>
+      <Head>
+        <title>Store Locator</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <div>
+        <Map geocodedStoreLocations={geocodedStoreLocations} />
+      </div>
+    </>
   );
 };
 
