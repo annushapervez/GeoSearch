@@ -9,11 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "dotenv": "^16.4.7",
+    "fs": "^0.0.1-security",
     "leaflet": "^1.9.4",
+    "leaflet.markercluster": "^1.5.3",
     "next": "15.1.7",
+    "papaparse": "^5.5.2",
+    "path": "^0.12.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-leaflet": "^5.0.0"
+    "react-leaflet": "^5.0.0",
+    "react-leaflet-markercluster": "^5.0.0-rc.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

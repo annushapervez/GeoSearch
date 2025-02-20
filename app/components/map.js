@@ -1,10 +1,11 @@
 "use client"; // Ensures compatibility with Next.js (App Router)
-
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { useEffect, useState } from "react";
-
+import MarkerClusterGroup from "react-leaflet-markercluster";
+import "leaflet.markercluster/dist/MarkerCluster.css"
+import "leaflet.markercluster/dist/MarkerCluster.Default.css"
 // Custom icons for different store types
 const totalByWirelessIcon = new L.Icon({
   iconUrl: "/total-by-wireless.png", // Place this in /public/icons/
@@ -16,33 +17,27 @@ const rainbowIcon = new L.Icon({
   iconSize: [35, 35],
 });
 
-// Store locations (Sample Data, Replace with Real Locations)
-const storeLocations = [
-  {
-    id: 1,
-    name: "Total by Wireless - NYC",
-    lat: 40.7128,
-    lng: -74.0060,
-    type: "total-by-wireless",
-    address: "123 Main St, New York, NY 10001",
-  },
-  {
-    id: 2,
-    name: "Total by Wireless - Brooklyn",
-    lat: 40.6782,
-    lng: -73.9442,
-    type: "total-by-wireless",
-    address: "456 Brooklyn Ave, Brooklyn, NY 11201",
-  },
-  {
-    id: 3,
-    name: "Rainbow Store - Newark",
-    lat: 40.7357,
-    lng: -74.1724,
-    type: "rainbow",
-    address: "789 Market St, Newark, NJ 07102",
-  },
-];
+const rentACenterIcon = new L.Icon({
+  iconUrl: "/rentacenter.png", // Place this in /public/icons/
+  iconSize: [35, 35],
+});
+
+const cricketIcon = L.divIcon({
+  className: "custom-icon",
+  html: `<div class="round-icon" style="background-image: url('/cricket.png');"></div>`,
+  iconSize: [35, 35],
+});
+
+const metroPCIcon = L.divIcon({
+  className: "custom-icon",
+  html: `<div class="round-icon" style="background-image: url('/metro.png');"></div>`,
+  iconSize: [35, 35],
+});
+
+const boostIcon = new L.Icon({
+  iconUrl: "/boost.png",
+  iconSize: [35, 35],
+});
 
 // Function to get the right icon
 const getIcon = (type) => {
@@ -51,6 +46,14 @@ const getIcon = (type) => {
       return totalByWirelessIcon;
     case "rainbow":
       return rainbowIcon;
+    case "rentacenter":
+      return rentACenterIcon;
+    case "cricket":
+      return cricketIcon;
+    case "metropc":
+      return metroPCIcon;
+    case "boost":
+      return boostIcon;
     default:
       return totalByWirelessIcon;
   }
@@ -94,9 +97,32 @@ const HomeButton = () => {
   );
 };
 
-const StoreMap = () => {
+// MarkerCluster Component
+const MarkerCluster = ({ stores }) => {
+  const map = useMap(); // Access the map instance
+
+  useEffect(() => {
+    const markerCluster = new MarkerClusterGroup();
+
+    stores.forEach((store) => {
+      const marker = L.marker([store.lat, store.lng], { icon: getIcon(store.type) });
+      marker.bindPopup(`<strong>${store.name}</strong><br>${store.address}`);
+      markerCluster.addLayer(marker);
+    });
+
+    map.addLayer(markerCluster);
+
+    return () => {
+      map.removeLayer(markerCluster); // Cleanup on unmount
+    };
+  }, [stores, map]);
+
+  return null; // This component doesn't render anything
+};
+
+const StoreMap = ({ geocodedStoreLocations }) => {
   const [mapReady, setMapReady] = useState(false);
-  const [filteredStores, setFilteredStores] = useState(storeLocations);
+  const [filteredStores, setFilteredStores] = useState(geocodedStoreLocations);
   const [selectedType, setSelectedType] = useState(""); // Store type filter state
   const [searchQuery, setSearchQuery] = useState(""); // Search bar state
 
@@ -120,7 +146,7 @@ const StoreMap = () => {
 
   // Filter stores by type and name/address
   const filterStores = (type, query) => {
-    const filtered = storeLocations.filter((store) => {
+    const filtered = geocodedStoreLocations.filter((store) => {
       const matchesType = type ? store.type === type : true;
       const matchesSearch =
         store.name.toLowerCase().includes(query.toLowerCase()) ||
@@ -176,6 +202,12 @@ const StoreMap = () => {
           <option value="">All Stores</option>
           <option value="total-by-wireless">Total by Wireless</option>
           <option value="rainbow">Rainbow Store</option>
+          <option value="rentacenter">Rent a Center</option>
+          <option value="cricket">Cricket</option>
+          <option value="boost">Boost Mobile</option>
+          <option value="metropc">Metro PCs</option>
+
+
         </select>
       </div>
 
@@ -189,14 +221,24 @@ const StoreMap = () => {
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         />
+       <MarkerClusterGroup
+       maxClusterRadius={50} // Adjust cluster radius (smaller = more clusters)
+        disableClusteringAtZoom={15} // Disable clustering at zoom level 15
+      >
         {filteredStores.map((store) => (
-          <Marker key={store.id} position={[store.lat, store.lng]} icon={getIcon(store.type)}>
+          <Marker
+            key={store.id}
+            position={[store.lat, store.lng]}
+            icon={getIcon(store.type)}
+          >
             <Popup>
-              <strong>{store.name}</strong><br />
-              {store.address} {/* Display the address */}
+              <strong>{store.name}</strong>
+              <br />
+              {store.address}
             </Popup>
           </Marker>
         ))}
+      </MarkerClusterGroup>
         <HomeButton /> {/* Add the Home Button */}
       </MapContainer>
     </div>
@@ -206,3 +248,5 @@ const StoreMap = () => {
 };
 
 export default StoreMap;
+
+//no matter how much i zoom in i should always have access to  the side options, filtering? 
