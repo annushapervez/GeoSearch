@@ -188,7 +188,7 @@ const StoreMap = ({ geocodedStoreLocations }) => {
           }}
         >
           <option value="">All Stores</option>
-          <option value="total-by-wireless">Total by Wireless</option>
+          <option value="total-by-wireless">Total Wireless</option>
           <option value="rainbow">Rainbow Store</option>
           <option value="rentacenter">Rent a Center</option>
           <option value="cricket">Cricket</option>

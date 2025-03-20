@@ -279,7 +279,7 @@ const csvData = `Rainbow,Rainbow coordinates,Rent a center,Rent a center coordin
 ,,"30 Berlin Rd, Clementon, NJ 08021, United States","39.805149, -74.989916", ,,,,,,,,`;
 const formatTypeName = (type) => {
     const typeMap = {
-      "total-by-wireless": "Total by Wireless",
+      "total-by-wireless": "Total Wireless",
       "rainbow": "Rainbow Store",
       "rentacenter": "Rent a Center",
       "cricket": "Cricket",
